@@ -4,9 +4,59 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:_05_Image_Btn"
+        xmlns:viewModels="clr-namespace:_05_Image_Btn.ViewModels"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
+
+    <!-- ViewModelをデータコンテキストとして設定します -->
+    <Window.DataContext>
+        <viewModels:MainWindowViewModel/>
+    </Window.DataContext>
+
+    <Window.Resources>
+        <!-- BooleanToVisibilityConverterをリソースとして定義します -->
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </Window.Resources>
+
+    <!-- グリッドを使用して要素を配置します -->
     <Grid>
+        <!-- 画像を表示します -->
+        <!-- SourceプロパティをViewModelのImageSourcePathにバインドします -->
+        <Image Source="{Binding ImageSourcePath}" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+        <!-- 発光部分を表現するためのCanvasを配置します -->
+        <!-- このCanvasが画像の上に重なります -->
+        <Canvas>
+            <!-- 発光エフェクト用の長方形を配置します -->
+            <!-- Canvas.LeftとCanvas.Topで位置を、WidthとHeightでサイズをバインドします -->
+            <!-- VisibilityプロパティをIsGlowVisibleにバインドします -->
+
+            <Rectangle Canvas.Left="{Binding GlowLeft}"
+                       Canvas.Top="{Binding GlowTop}"
+                       Width="{Binding GlowWidth}"
+                       Height="{Binding GlowHeight}"
+                       Fill="{Binding GlowColor}"
+                       Opacity="0.5"
+                       Visibility="{Binding IsGlowVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+
+                <!-- 発光効果のためのエフェクトを追加します -->
+
+                <Rectangle.Effect>
+                    <BlurEffect Radius="20"/>
+                </Rectangle.Effect>
+            </Rectangle>
+        </Canvas>
+
+        <!-- ボタンを配置します -->
+        <!-- CommandプロパティをViewModelのToggleGlowCommandにバインドします -->
+        <Button Content="光を切り替える"
+                Command="{Binding ToggleGlowCommand}"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Bottom"
+                Margin="0,0,0,20"
+                Padding="20,10"
+                FontSize="16"/>
 
     </Grid>
+
 </Window>
