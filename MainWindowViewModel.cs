@@ -19,10 +19,32 @@ namespace _05_Image_Btn.ViewModels
 
         // 発光部分の座標とサイズ
         // 例: 画像の左上角からの位置とサイズ
-        public double GlowLeft { get; } = 150;
-        public double GlowTop { get; } = 100;
-        public double GlowWidth { get; } = 100;
-        public double GlowHeight { get; } = 100;
+        // プロパティ変更通知を可能にするためObservableProperty属性を使用します
+        [ObservableProperty]
+        private double _glowLeft;
+        [ObservableProperty]
+        private double _glowTop;
+        [ObservableProperty]
+        private double _glowWidth;
+        [ObservableProperty]
+        private double _glowHeight;
+        
+        // 元の座標とサイズ（画像の原寸に対する比率を計算するために使用）
+        private const double originalImageWidth = 800;
+        private const double originalImageHeight = 600;
+        private const double originalGlowLeft = 150;
+        private const double originalGlowTop = 100;
+        private const double originalGlowWidth = 100;
+        private const double originalGlowHeight = 100;
+
+        // コンストラクタで初期値を設定
+        public MainWindowViewModel()
+        {
+            GlowLeft = originalGlowLeft;
+            GlowTop = originalGlowTop;
+            GlowWidth = originalGlowWidth;
+            GlowHeight = originalGlowHeight;
+        }
 
         // ボタンのクリックイベントに紐づけるコマンド
         // [RelayCommand]属性を使用することで、自動的にコマンドが生成されます
@@ -35,5 +57,19 @@ namespace _05_Image_Btn.ViewModels
 
         // 発光部分の色を定義するプロパティ
         public SolidColorBrush GlowColor { get; } = new SolidColorBrush(Colors.Yellow);
+        
+        // 画像のサイズが変更されたときに呼び出されるメソッド
+        public void OnImageSizeChanged(double actualWidth, double actualHeight)
+        {
+            // 画像の伸縮率を計算
+            double widthRatio = actualWidth / originalImageWidth;
+            double heightRatio = actualHeight / originalImageHeight;
+            
+            // 新しい位置とサイズを計算してプロパティを更新
+            GlowLeft = originalGlowLeft * widthRatio;
+            GlowTop = originalGlowTop * heightRatio;
+            GlowWidth = originalGlowWidth * widthRatio;
+            GlowHeight = originalGlowHeight * heightRatio;
+        }
     }
 }
