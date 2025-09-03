@@ -21,13 +21,12 @@
     <!-- グリッドを使用して要素を配置します -->
     <Grid>
         <!-- 画像を表示します -->
-        <!-- SourceプロパティをViewModelのImageSourcePathにバインドします -->
         <!-- Nameを付けて、イベントハンドラを追加します -->
         <Image x:Name="mainImage" Source="{Binding ImageSourcePath}" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center" SizeChanged="OnImageSizeChanged"/>
         
         <!-- 発光部分を表現するためのCanvasを配置します -->
         <!-- このCanvasが画像の上に重なります -->
-        <Canvas>
+        <Canvas x:Name="glowCanvas" Panel.ZIndex="1" HorizontalAlignment="Center" VerticalAlignment="Center" SizeChanged="OnGlowCanvasSizeChanged">
             <!-- 発光エフェクト用の長方形を配置します -->
             <!-- Canvas.LeftとCanvas.Topで位置を、WidthとHeightでサイズをバインドします -->
             <!-- VisibilityプロパティをIsGlowVisibleにバインドします -->

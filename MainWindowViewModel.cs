@@ -1,5 +1,3 @@
-// dotnet add package CommunityToolkit.Mvvm
-
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Windows.Media;
@@ -29,22 +27,8 @@ namespace _05_Image_Btn.ViewModels
         [ObservableProperty]
         private double _glowHeight;
         
-        // 元の座標とサイズ（画像の原寸に対する比率を計算するために使用）
-        private const double originalImageWidth = 800;
-        private const double originalImageHeight = 600;
-        private const double originalGlowLeft = 150;
-        private const double originalGlowTop = 100;
-        private const double originalGlowWidth = 100;
-        private const double originalGlowHeight = 100;
-
-        // コンストラクタで初期値を設定
-        public MainWindowViewModel()
-        {
-            GlowLeft = originalGlowLeft;
-            GlowTop = originalGlowTop;
-            GlowWidth = originalGlowWidth;
-            GlowHeight = originalGlowHeight;
-        }
+        // 発光部分の色を定義するプロパティ
+        public SolidColorBrush GlowColor { get; } = new SolidColorBrush(Colors.Yellow);
 
         // ボタンのクリックイベントに紐づけるコマンド
         // [RelayCommand]属性を使用することで、自動的にコマンドが生成されます
@@ -55,21 +39,24 @@ namespace _05_Image_Btn.ViewModels
             IsGlowVisible = !IsGlowVisible;
         }
 
-        // 発光部分の色を定義するプロパティ
-        public SolidColorBrush GlowColor { get; } = new SolidColorBrush(Colors.Yellow);
-        
-        // 画像のサイズが変更されたときに呼び出されるメソッド
-        public void OnImageSizeChanged(double actualWidth, double actualHeight)
+        // 画像のレンダリングサイズとオフセットに基づいてRectangleのプロパティを更新
+        public void UpdateGlowPositionAndSize(double renderedWidth, double renderedHeight, double offsetX, double offsetY)
         {
-            // 画像の伸縮率を計算
-            double widthRatio = actualWidth / originalImageWidth;
-            double heightRatio = actualHeight / originalImageHeight;
-            
+            // 元の画像のサイズ（ViewModelで定義されているもの）
+            double originalImageWidth = 800;
+            double originalImageHeight = 600;
+
+            // 元のGlowの座標とサイズ（ViewModelで定義されているもの）
+            double originalGlowLeft = 150;
+            double originalGlowTop = 100;
+            double originalGlowWidth = 100;
+            double originalGlowHeight = 100;
+
             // 新しい位置とサイズを計算してプロパティを更新
-            GlowLeft = originalGlowLeft * widthRatio;
-            GlowTop = originalGlowTop * heightRatio;
-            GlowWidth = originalGlowWidth * widthRatio;
-            GlowHeight = originalGlowHeight * heightRatio;
+            GlowLeft = (originalGlowLeft / originalImageWidth) * renderedWidth + offsetX;
+            GlowTop = (originalGlowTop / originalImageHeight) * renderedHeight + offsetY;
+            GlowWidth = (originalGlowWidth / originalImageWidth) * renderedWidth;
+            GlowHeight = (originalGlowHeight / originalImageHeight) * renderedHeight;
         }
     }
 }
